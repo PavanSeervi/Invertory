@@ -1,0 +1,16 @@
+<h1>
+    <%= customer.name %>
+</h1>
+<p>Contact: <%= customer.contact %>
+</p>
+<p>Address: <%= customer.address %>
+</p>
+
+<h2>Purchase History</h2>
+<ul>
+    <% invoices.forEach(invoice=> { %>
+        <li>
+            <a href="/invoices/<%= invoice._id %>">Invoice #<%= invoice._id %></a> - Total: <%= invoice.totalAmount %>
+        </li>
+        <% }); %>
+</ul>

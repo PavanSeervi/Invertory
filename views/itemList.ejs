@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background-color: #f0f4f8;
+            /* Soft background color */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        .table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            background-color: #007bff;
+            /* Bootstrap primary color */
+            color: white;
+        }
+
+        .modal-footer button {
+            border-radius: 4px;
+        }
+
+        .back-button {
+            background-color: #28a745;
+            /* Green color for the back button */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #218838;
+            /* Darker green on hover */
+        }
+
+        .btn-success {
+            background-color: #17a2b8;
+            /* Teal color for Add Item button */
+            border: none;
+        }
+
+        .btn-success:hover {
+            background-color: #138496;
+            /* Darker teal on hover */
+        }
+
+        .table th {
+            background-color: #343a40;
+            /* Dark background for table headers */
+            color: white;
+        }
+
+        .table td {
+            vertical-align: middle;
+            /* Aligns text in the center */
+        }
+
+        .icon {
+            margin-right: 5px;
+            /* Spacing for icons */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <button class="back-button" onclick="window.history.back();">
+            <i class="fas fa-arrow-left icon"></i> Back
+        </button>
+
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2><i class="fas fa-list icon"></i> Item List</h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% items.forEach(item=> { %>
+                            <tr>
+                                <td>
+                                    <%= item.name %>
+                                </td>
+                                <td>&#8377;<%= item.price.toFixed(2) %>
+                                </td>
+                                <td>
+                                    <%= item.description %>
+                                </td>
+                                <td>
+                                    <a href="/api/items/<%= item._id %>/edit" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit icon"></i>Edit
+                                    </a>
+                                    <form action="/api/items/<%= item._id %>/delete" method="POST"
+                                        style="display:inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash icon"></i>Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+                <button id="btnCreateInvoice" class="btn btn-success">
+                    <i class="fas fa-plus icon"></i>Add Item
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Adding Items -->
+    <div class="modal fade" id="addItemModal" tabindex="-1" role="dialog" aria-labelledby="addItemModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addItemModalLabel"><i class="fas fa-plus icon"></i> Add New Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="addItemForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="itemName">Item Name</label>
+                            <input type="text" class="form-control" id="itemName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="itemPrice">Price</label>
+                            <input type="number" class="form-control" id="itemPrice" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="itemDescription">Description</label>
+                            <textarea class="form-control" id="itemDescription" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add Item</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Show the modal when the button is clicked
+        $('#btnCreateInvoice').click(function () {
+            $('#addItemModal').modal('show');
+        });
+
+        // Handle form submission
+        $('#addItemForm').submit(function (e) {
+            e.preventDefault(); // Prevent default form submission
+            const itemData = {
+                name: $('#itemName').val(),
+                price: $('#itemPrice').val(),
+                description: $('#itemDescription').val()
+            };
+
+            $.post('/api/items', itemData, function () {
+                window.location.reload();
+            }).fail(function (err) {
+                alert('Error: ' + err.responseText); // Handle errors
+            });
+        });
+    </script>
+</body>
+
+</html>

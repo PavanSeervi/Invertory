@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            max-width: 400px;
+            /* Set to match the login form */
+            width: 100%;
+            /* Full width until max-width is reached */
+            padding: 40px;
+            /* Match the padding from the login form */
+            background-color: #1e1e1e;
+            border-radius: 15px;
+            /* Match the border radius */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            margin: 0 auto;
+            /* Center the container */
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            /* Match the margin from the login form */
+            color: #4ca1af;
+            font-weight: 600;
+            font-size: 28px;
+            /* Match font size */
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #4ca1af;
+        }
+
+        .form-control {
+            background-color: #2a2a2a;
+            border: 1px solid #4ca1af;
+            color: #e0e0e0;
+            padding-left: 45px;
+            /* Space for the icons */
+            border-radius: 10px;
+            /* Match the border radius */
+        }
+
+        .form-control:focus {
+            border-color: #4ca1af;
+            box-shadow: 0 0 10px rgba(76, 161, 175, 0.3);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4ca1af;
+        }
+
+        .btn-primary {
+            background-color: #4ca1af;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #358a94;
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 12px;
+            font-weight: bold;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-group p {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .form-group a {
+            color: #4ca1af;
+            text-decoration: none;
+        }
+
+        .form-group a:hover {
+            text-decoration: underline;
+        }
+
+        /* Adjust spacing between form fields */
+        .form-group+.form-group {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>Register</h2>
+            <form action="/register" method="POST">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <i class="fas fa-user input-icon"></i> <!-- Username Icon -->
+                    <input type="text" name="username" id="username" class="form-control" placeholder="Enter username"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <i class="fas fa-envelope input-icon"></i> <!-- Email Icon -->
+                    <input type="email" name="email" id="email" class="form-control" placeholder="Enter email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <i class="fas fa-lock input-icon"></i> <!-- Password Icon -->
+                    <input type="password" name="password" id="password" class="form-control"
+                        placeholder="Enter password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <i class="fas fa-lock input-icon"></i> <!-- Confirm Password Icon -->
+                    <input type="password" name="confirm_password" id="confirm_password" class="form-control"
+                        placeholder="Confirm password" required>
+                </div>
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <i class="fas fa-user-shield input-icon"></i> <!-- Role Icon -->
+                    <select name="role" id="role" class="form-control">
+                        <option value="manager">Manager</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus mr-2"></i> <!-- Register Icon -->
+                        Register
+                    </button>
+                </div>
+            </form>
+            <div class="form-group">
+                <p>Already have an account? <a href="/login">Login here</a>.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Font Awesome 6 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+</body>
+
+</html>

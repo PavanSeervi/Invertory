@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            /* Light background */
+        }
+
+        .invoice-header {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #007bff;
+            /* Bootstrap primary color */
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .invoice-table {
+            margin-bottom: 20px;
+        }
+
+        .table th {
+            background-color: #343a40;
+            /* Dark background for headers */
+            color: white;
+            /* White text for headers */
+        }
+
+        .table tbody tr:hover {
+            background-color: #e9ecef;
+            /* Light hover effect */
+        }
+
+        .total-amount {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: #28a745;
+            /* Green for total amount */
+        }
+
+        .back-link {
+            margin-top: 20px;
+            display: inline-block;
+            background-color: #17a2b8;
+            /* Teal color */
+            color: white;
+        }
+
+        .back-link:hover {
+            background-color: #138496;
+            /* Darker teal on hover */
+        }
+
+        .icon {
+            margin-right: 5px;
+            /* Spacing for icons */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="invoice-header text-center">
+            <h1><i class="fas fa-file-invoice"></i> Invoice</h1>
+            <h2>Customer Name: <%= invoice.customerName %>
+            </h2>
+            <h3>Date: <%= new Date(invoice.date).toLocaleDateString() %>
+            </h3>
+        </div>
+
+        <table id="invoiceTable" class="table table-bordered table-striped invoice-table">
+            <thead class="thead-light">
+                <tr>
+                    <th><i class="fas fa-box"></i> Item</th>
+                    <th><i class="fas fa-cube"></i> Quantity</th>
+                    <th><i class="fas fa-rupee-sign"></i> Price (₹)</th>
+                    <th><i class="fas fa-money-bill-wave"></i> Total (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% invoice.items.forEach(item=> { %>
+                    <tr>
+                        <td>
+                            <%= item.item.name %>
+                        </td>
+                        <td>
+                            <%= item.quantity %>
+                        </td>
+                        <td>&#8377;<%= item.price.toFixed(2) %>
+                        </td>
+                        <td>&#8377;<%= (item.price * item.quantity).toFixed(2) %>
+                        </td>
+                    </tr>
+                    <% }) %>
+            </tbody>
+        </table>
+
+        <div class="text-right">
+            <h3 class="total-amount"><i class="fas fa-calculator"></i> Total Amount: &#8377;<%=
+                    invoice.totalAmount.toFixed(2) %>
+            </h3>
+        </div>
+
+        <a href="/" class="btn back-link"><i class="fas fa-arrow-left icon"></i>Back to Home</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sri Matha Traders</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #343a40;
+            /* Dark background */
+            color: #f8f9fa;
+            /* Light text color */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            /* Ensure full height for the body */
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: auto;
+            /* Pushes footer to the bottom */
+            font-size: 12px;
+            color: #ccc;
+            /* Light footer text color */
+            background-color: #212529;
+            /* Dark footer background */
+            padding: 10px 0;
+            /* Footer padding */
+        }
+
+        .nav-buttons button {
+            margin-bottom: 10px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .navbar {
+            background-color: #007bff;
+        }
+
+        .navbar-brand,
+        .nav-link {
+            color: #f8f9fa !important;
+        }
+
+        h2 {
+            color: #007bff;
+        }
+
+        h1 {
+            color: #28a745;
+        }
+
+        .card {
+            margin: 15px 0;
+            background-color: #495057;
+            /* Dark card background */
+            color: #f8f9fa;
+            /* Light card text color */
+        }
+
+        .btn-primary {
+            background-color: #28a745;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #218838;
+        }
+
+        .add-to-invoice {
+            background-color: #ffc107;
+            border: none;
+        }
+
+        .add-to-invoice:hover {
+            background-color: #e0a800;
+        }
+
+        .table {
+            background-color: #343a40;
+            /* Dark table background */
+        }
+
+        .table th,
+        .table td {
+            color: #f8f9fa;
+            /* Light table text color */
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #495057;
+        }
+
+        .text-muted {
+            color: white !important;
+        }
+
+        .logout {
+            margin: 0px 0px 0px 500px !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid flex-grow-1">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-md navbar-light">
+            <a class="navbar-brand" href="#">Sri Matha Traders</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav">
+                    <button id="btnBillingSystem" class="nav-link btn btn-link"><i class="fas fa-home"></i>
+                        Home</button>
+                    <button id="btnItemList" class="nav-link btn btn-link"><i class="fas fa-list"></i> Item
+                        List</button>
+                    <button id="btnCreateInvoice" class="nav-link btn btn-link"><i class="fas fa-file-invoice"></i>
+                        Create Invoice</button>
+                    <button id="btnAddItems" class="nav-link btn btn-link"><i class="fas fa-plus"></i> Add
+                        Items</button>
+                    <% if (user) { %>
+                        <form action="/logout" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger logout"><i class="fas fa-sign-out-alt"></i>
+                                Logout</button>
+                        </form>
+                        <% } %>
+                </div>
+            </div>
+        </nav>
+
+        <div class="row">
+            <!-- Main Content -->
+            <main role="main" class="col-md-12 px-4">
+                <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Sri Matha Traders</h1>
+                </div>
+
+                <!-- Billing System Section -->
+                <div id="billingSystemSection" class="section active">
+                    <h2><i class="fas fa-shopping-cart"></i> Available Items</h2>
+                    <div class="row">
+                        <% items.forEach(item=> { %>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <%= item.name %>
+                                        </h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">&#8377;<%= item.price.toFixed(2) %>
+                                        </h6>
+                                        <p class="card-text">
+                                            <%= item.description %>
+                                        </p>
+                                        <input type="number" id="quantity-<%= item._id %>" class="form-control mb-2"
+                                            placeholder="Qty" min="1">
+                                        <button class="btn btn-primary add-to-invoice" data-id="<%= item._id %>"><i
+                                                class="fas fa-plus"></i> Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                </div>
+
+                <!-- Item List Section -->
+                <div id="itemListSection" class="section">
+                    <h2><i class="fas fa-th-list"></i> Item List</h2>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemList">
+                            <% items.forEach(item=> { %>
+                                <tr>
+                                    <td>
+                                        <%= item.name %>
+                                    </td>
+                                    <td>&#8377;<%= item.price.toFixed(2) %>
+                                    </td>
+                                    <td>
+                                        <a href="/api/items/<%= item._id %>/edit" class="btn btn-warning btn-sm"><i
+                                                class="fas fa-edit"></i> Edit</a>
+                                        <form action="/api/items/<%= item._id %>/delete" method="POST"
+                                            style="display:inline;">
+                                            <button type="submit" class="btn btn-danger btn-sm"><i
+                                                    class="fas fa-trash-alt"></i> Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Create Invoice Section -->
+                <div id="createInvoiceSection" class="section">
+                    <h2><i class="fas fa-file-invoice"></i> Create Invoice</h2>
+                    <form id="invoiceForm" action="/api/invoices" method="POST">
+                        <div class="form-group">
+                            <input type="text" name="customerName" class="form-control" placeholder="Customer Name"
+                                required>
+                        </div>
+                        <h3>Select Items:</h3>
+                        <div id="itemSelection">
+                            <!-- Selected items will be added here -->
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Generate Invoice</button>
+                    </form>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer bg-dark">
+            <div class="container">
+                <p class="text-center">© 2024 Sri Matha Traders</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Show and hide sections based on button click
+        const billingSystemSection = document.getElementById('billingSystemSection');
+        const itemListSection = document.getElementById('itemListSection');
+        const createInvoiceSection = document.getElementById('createInvoiceSection');
+
+        document.getElementById('btnBillingSystem').addEventListener('click', function () {
+            billingSystemSection.classList.add('active');
+            itemListSection.classList.remove('active');
+            createInvoiceSection.classList.remove('active');
+        });
+
+        document.getElementById('btnItemList').addEventListener('click', function () {
+            billingSystemSection.classList.remove('active');
+            itemListSection.classList.add('active');
+            createInvoiceSection.classList.remove('active');
+        });
+
+        document.getElementById('btnCreateInvoice').addEventListener('click', function () {
+            billingSystemSection.classList.remove('active');
+            itemListSection.classList.remove('active');
+            createInvoiceSection.classList.add('active');
+        });
+
+        document.getElementById('btnAddItems').addEventListener('click', function () {
+            window.location.href = '/items'; // Change this to the actual path for your item list page
+        });
+
+        // Add item to invoice functionality
+        document.querySelectorAll('.add-to-invoice').forEach(button => {
+            button.addEventListener('click', function () {
+                const itemId = this.getAttribute('data-id');
+                const quantity = document.getElementById(`quantity-${itemId}`).value;
+
+                if (quantity > 0) {
+                    const itemSelection = document.getElementById('itemSelection');
+                    const newItem = document.createElement('div');
+                    newItem.className = 'invoice-item';
+                    newItem.innerHTML = `
+                        <input type="hidden" name="items[${itemSelection.children.length}][itemId]" value="${itemId}">
+                        <input type="number" name="items[${itemSelection.children.length}][quantity]" class="form-control quantity" value="${quantity}" min="0">
+                        <button type="button" class="btn btn-success btn-sm increment">+</button>
+                        <button type="button" class="btn btn-danger btn-sm decrement">-</button>
+                        <p>Item ID: ${itemId}</p>
+                    `;
+                    itemSelection.appendChild(newItem);
+                } else {
+                    alert("Please enter a valid quantity.");
+                }
+            });
+        });
+
+        // Increment and Decrement functionality
+        document.getElementById('itemSelection').addEventListener('click', function (e) {
+            if (e.target.classList.contains('increment')) {
+                const quantityInput = e.target.previousElementSibling;
+                quantityInput.value = parseInt(quantityInput.value) + 1;
+            } else if (e.target.classList.contains('decrement')) {
+                const quantityInput = e.target.previousElementSibling.previousElementSibling;
+                if (parseInt(quantityInput.value) > 0) {
+                    quantityInput.value = parseInt(quantityInput.value) - 1;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

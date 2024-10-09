@@ -1,0 +1,17 @@
+<h1>Customers</h1>
+<form action="/customers" method="POST">
+    <input type="text" name="name" placeholder="Customer Name" required>
+    <input type="text" name="contact" placeholder="Contact Number" required>
+    <input type="text" name="address" placeholder="Address">
+    <button type="submit">Add Customer</button>
+</form>
+
+<ul>
+    <% customers.forEach(customer=> { %>
+        <li>
+            <a href="/customers/<%= customer._id %>">
+                <%= customer.name %>
+            </a> - <%= customer.contact %>
+        </li>
+        <% }); %>
+</ul>
