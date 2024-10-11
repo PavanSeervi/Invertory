@@ -22,9 +22,10 @@
         .container-fluid {
             max-width: 1200px;
             margin: auto;
+            flex-grow: 1;
+            /* Allow the container to grow */
         }
 
-        /* Full-width navbar styles */
         .navbar {
             background: linear-gradient(to bottom right, #bfe0fd, #305f75, #45729f);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -40,20 +41,22 @@
             font-weight: bold;
             font-size: 24px;
             color: #fff;
-            /* White for contrast */
         }
 
         .nav-link {
             color: #fff !important;
-            /* White text for better visibility */
             margin-right: 20px;
             font-weight: 500;
             transition: color 0.3s;
         }
 
+        .nav-link-active {
+            text-decoration: underline;
+            color: #bfe0fd;
+        }
+
         .nav-link:hover {
             color: #bfe0fd !important;
-            /* Light color on hover */
         }
 
         h1,
@@ -71,61 +74,51 @@
             font-size: 28px;
         }
 
-        /* Updated card styles */
         .card {
             border: none;
-            border-radius: 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            /* Slightly more pronounced shadow */
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
             margin: 15px 0;
             background-color: #ffffff;
-            /* White for cards */
         }
 
         .card-body {
             padding: 20px;
             border-left: 4px solid #305f75;
-            /* Left border for emphasis */
         }
 
         .card-title {
             font-weight: 600;
             font-size: 20px;
             color: #305f75;
-            /* Using a color from the navbar for consistency */
         }
 
         .form-control {
-            border-radius: 0;
+            border-radius: 10px;
         }
 
-        .btn {
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 0;
-            padding: 10px 20px;
-            transition: background-color 0.3s;
+        .btn-active {
+            background-color: #2c7393;
+            color: #fff;
+            border-color: #305f75;
         }
 
-        .btn-primary {
-            background-color: #45729f;
-            /* A lighter blue */
-            border-color: #45729f;
-        }
-
-        .btn-primary:hover {
-            background-color: #305f75;
-            /* Darker shade on hover */
+        .btn-active:hover {
+            background-color: #82b5e8;
         }
 
         .footer {
             background-color: rgba(255, 255, 255, 0.9);
-            /* Semi-transparent footer */
             padding: 20px 0;
             text-align: center;
             border-top: 1px solid #ddd;
             color: #999;
-            margin-top: auto;
+            position: fixed;
+            /* Fix the footer to the bottom */
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /* Position it at the bottom */
         }
 
         .section {
@@ -171,8 +164,33 @@
                 margin-right: 10px;
             }
 
+            .navbar {
+                flex-direction: column;
+                /* Stack items vertically */
+                align-items: flex-start;
+                /* Align items to the start */
+                padding: 10px;
+                /* Adjust padding */
+            }
+
             .btn {
                 padding: 8px 15px;
+                width: 100%;
+                /* Full width buttons on mobile */
+                margin-bottom: 10px;
+                /* Space between buttons */
+            }
+
+            .card {
+                margin: 10px;
+                /* Reduce margin on cards */
+            }
+
+            .table {
+                width: 100%;
+                /* Full width table */
+                overflow-x: auto;
+                /* Allow horizontal scrolling */
             }
         }
 
@@ -182,8 +200,6 @@
             }
         }
     </style>
-
-
 </head>
 
 <body>
@@ -228,16 +244,14 @@
                     <h2><i class="fas fa-shopping-cart"></i> Available Items</h2>
 
                     <!-- Search Input -->
-                    <input type="text" id="searchInput" placeholder="Search for items..." class="form-control mb-3">
+                    <input type="text" id="searchInput" placeholder="Search for items..." class="form-control mb-3"
+                        style="width: 25%;">
 
                     <div class="row" id="items-container">
                         <% items.forEach(item=> { %>
                             <div class="col-6 col-md-4 item">
                                 <div class="card mb-3" style="max-width: 540px;">
                                     <div class="row g-0">
-                                        <div class="col-md-4">
-                                            <img src="..." class="img-fluid rounded-start" alt="...">
-                                        </div>
                                         <div class="col-md-8">
                                             <div class="card-body">
                                                 <h5 class="card-title">
@@ -281,10 +295,10 @@
                                     <td>
                                         <a href="/api/items/<%= item._id %>/edit" class="btn btn-warning btn-sm"><i
                                                 class="fas fa-edit"></i> Edit</a>
-                                        <form action="/api/items/<%= item._id %>/delete" method="POST"
+                                        <form action="/api/items/<%= item._id %>?_method=DELETE" method="POST"
                                             style="display:inline;">
                                             <button type="submit" class="btn btn-danger btn-sm"><i
-                                                    class="fas fa-trash-alt"></i> Delete</button>
+                                                    class="fas fa-trash"></i> Delete</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -296,73 +310,54 @@
                 <!-- Create Invoice Section -->
                 <div id="createInvoiceSection" class="section">
                     <h2><i class="fas fa-file-invoice"></i> Create Invoice</h2>
-                    <form action="/api/invoices" method="POST">
-                        <input type="text" name="customerName" placeholder="Customer Name" required
-                            class="form-control mb-3">
-
-                        <table id="items-table" class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Quantity</th>
-                                </tr>
-                            </thead>
-                            <!-- Change this ID to avoid conflicts -->
-                            <tbody id="invoice-items-container"> <!-- Change this ID -->
-                                <tr>
-                                    <td>
-                                        <select name="items[0][itemId]" required class="form-control">
-                                            <option value="" disabled selected>Select Item</option>
-                                            <% items.forEach(item=> { %>
-                                                <option value="<%= item._id %>">
-                                                    <%= item.name %>
-                                                </option>
-                                                <% }) %>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="items[0][quantity]" placeholder="Quantity" required
-                                            class="form-control">
-                                    </td>
-                                </tr>
-                            </tbody>
-
-                            <!-- Button to add another item -->
-                            <button type="button" id="add-item-button" class="btn btn-secondary">Add Another
-                                Item</button>
-                            <button type="submit" class="btn btn-primary">Generate Invoice</button>
-                    </form>
+                    <div class="form-group">
+                        <label for="customerName">Customer Name</label>
+                        <input type="text" id="customerName" class="form-control" placeholder="Customer Name"
+                            style="width: 25%;">
+                    </div>
+                    <button id="generateInvoice" class="btn btn-primary">Generate Invoice</button>
+                    <button id="addAnotherItem" class="btn btn-primary" style="margin-left: 10px;">Add Another
+                        Item</button>
+                    <table class="table table-bordered mt-3" id="invoiceItemsTable">
+                        <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoiceItemsList">
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- Add Items Section -->
                 <div id="addItemsSection" class="section">
                     <h2><i class="fas fa-plus"></i> Add Items</h2>
-                    <form action="/api/items" method="POST">
+                    <div id="addItemContainer">
                         <div class="form-group">
-                            <label for="itemName">Item Name</label>
-                            <input type="text" name="name" id="itemName" class="form-control" required>
+                            <label for="newItemName">Item Name</label>
+                            <input type="text" id="newItemName" class="form-control" placeholder="Item Name">
                         </div>
                         <div class="form-group">
-                            <label for="itemPrice">Item Price</label>
-                            <input type="number" name="price" id="itemPrice" class="form-control" required>
+                            <label for="newItemPrice">Price</label>
+                            <input type="number" id="newItemPrice" class="form-control" placeholder="Price">
                         </div>
-                        <button type="submit" class="btn btn-primary">Add Item</button>
-                    </form>
+                        <button id="addItem" class="btn btn-primary">Add Item</button>
+                    </div>
                 </div>
-
             </main>
         </div>
-
-        <!-- Footer -->
-        <footer class="footer bg-dark">
-            <div class="container">
-                <p class="text-center text-white">© 2024 Sri Matha Traders</p>
-            </div>
-        </footer>
     </div>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div>© 2024 Sri Matha Traders. All rights reserved.</div>
+    </footer>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -370,56 +365,76 @@
             const itemListSection = document.getElementById('itemListSection');
             const createInvoiceSection = document.getElementById('createInvoiceSection');
             const searchInput = document.getElementById('searchInput');
+            const invoiceItemsContainer = document.getElementById('invoice-items-container');
+
+            // Function to set the active section
+            function setActiveSection(activeSection) {
+                // Hide all sections
+                billingSystemSection.classList.remove('active');
+                itemListSection.classList.remove('active');
+                createInvoiceSection.classList.remove('active');
+                // Show the active section
+                activeSection.classList.add('active');
+            }
+
+            // Function to set active button styling
+            function setActiveButton(clickedButton) {
+                const buttons = [document.getElementById('btnBillingSystem'),
+                document.getElementById('btnItemList'),
+                document.getElementById('btnCreateInvoice'),
+                document.getElementById('btnAddItems')];
+
+                buttons.forEach(button => {
+                    button.classList.remove('btn-active'); // Remove active class from all buttons
+                });
+                clickedButton.classList.add('btn-active'); // Add active class to the clicked button
+            }
 
             // Buttons for navigating sections
             document.getElementById('btnBillingSystem').addEventListener('click', function () {
-                billingSystemSection.classList.add('active');
-                itemListSection.classList.remove('active');
-                createInvoiceSection.classList.remove('active');
+                setActiveSection(billingSystemSection);
+                setActiveButton(this);
+                document.getElementById('addItemsSection').classList.remove('active'); // Hide add items section
             });
 
             document.getElementById('btnItemList').addEventListener('click', function () {
-                billingSystemSection.classList.remove('active');
-                itemListSection.classList.add('active');
-                createInvoiceSection.classList.remove('active');
+                setActiveSection(itemListSection);
+                setActiveButton(this);
+                document.getElementById('addItemsSection').classList.remove('active'); // Hide add items section
             });
 
             document.getElementById('btnCreateInvoice').addEventListener('click', function () {
-                billingSystemSection.classList.remove('active');
-                itemListSection.classList.remove('active');
-                createInvoiceSection.classList.add('active');
+                setActiveSection(createInvoiceSection);
+                setActiveButton(this);
+                document.getElementById('addItemsSection').classList.remove('active'); // Hide add items section
             });
 
             document.getElementById('btnAddItems').addEventListener('click', function () {
-                billingSystemSection.classList.remove('active');
-                itemListSection.classList.remove('active');
-                createInvoiceSection.classList.remove('active');
-                document.getElementById('addItemsSection').classList.add('active'); // Show add items section
+                setActiveSection(document.getElementById('addItemsSection'));
+                setActiveButton(this); // Make this button active
             });
-
 
             // Add dynamic item input rows for the invoice
             let itemIndex = 1;
 
             document.getElementById('add-item-button').addEventListener('click', function () {
                 const itemRow = document.createElement('tr');
-
                 itemRow.innerHTML = `
-<td>
-<select name="items[${itemIndex}][itemId]" required class="form-control">
-<option value="" disabled selected>Select Item</option>
-<% items.forEach(function(item) { %>
-<option value="<%= item._id %>"><%= item.name %></option>
-<% }) %>
-</select>
-</td>
-<td>
-<input type="number" name="items[${itemIndex}][quantity]" placeholder="Quantity" required class="form-control">
-</td>
-`;
+                    <td>
+                        <select name="items[${itemIndex}][itemId]" required class="form-control">
+                            <option value="" disabled selected>Select Item</option>
+                            <% items.forEach(function(item) { %>
+                            <option value="<%= item._id %>"><%= item.name %></option>
+                            <% }) %>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" name="items[${itemIndex}][quantity]" placeholder="Quantity" required class="form-control">
+                    </td>
+                `;
 
                 // Append the new row to the correct tbody
-                document.getElementById('invoice-items-container').appendChild(itemRow);
+                invoiceItemsContainer.appendChild(itemRow);
                 itemIndex++;
             });
 
@@ -430,39 +445,34 @@
 
                 items.forEach(item => {
                     const itemName = item.querySelector('.card-title').innerText.toLowerCase();
-                    if (itemName.includes(filter)) {
-                        item.style.display = ''; // Show item
-                    } else {
-                        item.style.display = 'none'; // Hide item
-                    }
+                    item.style.display = itemName.includes(filter) ? '' : 'none'; // Show or hide item
                 });
             });
 
             // Adding item directly to invoice page from the available items
-            const addToInvoiceButtons = document.querySelectorAll('.add-to-invoice');
-
-            addToInvoiceButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const itemId = this.getAttribute('data-id');
+            document.getElementById('items-container').addEventListener('click', function (e) {
+                if (e.target.classList.contains('add-to-invoice')) {
+                    const button = e.target;
+                    const itemId = button.getAttribute('data-id');
                     const quantityInput = document.getElementById(`quantity-${itemId}`);
                     const quantity = quantityInput ? quantityInput.value : '';
 
                     if (quantity) {
                         const itemRow = document.createElement('tr');
-                        const itemName = this.closest('.card-body').querySelector('.card-title').innerText; // Get the item name
+                        const itemName = button.closest('.card-body').querySelector('.card-title').innerText; // Get the item name
 
                         itemRow.innerHTML = `
-                        <td>
-<select name="items[${itemIndex}][itemId]" required>
-<option value="${itemId}" selected>${itemName}</option>
-</select>
-</td>
-<td>
-<input type="number" name="items[${itemIndex}][quantity]" value="${quantity}" required>
-</td>
-`;
+                            <td>
+                                <select name="items[${itemIndex}][itemId]" required>
+                                    <option value="${itemId}" selected>${itemName}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" name="items[${itemIndex}][quantity]" value="${quantity}" required>
+                            </td>
+                        `;
 
-                        document.getElementById('invoice-items-container').appendChild(itemRow);
+                        invoiceItemsContainer.appendChild(itemRow);
                         itemIndex++;
                         if (quantityInput) {
                             quantityInput.value = ''; // Clear the quantity input after adding
@@ -470,7 +480,7 @@
                     } else {
                         alert('Please enter a quantity.');
                     }
-                });
+                }
             });
         });
     </script>

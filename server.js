@@ -58,7 +58,7 @@ passport.deserializeUser(async (id, done) => {
 });
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/billing', {})
+mongoose.connect('mongodb+srv://pavanseervi52:CQ6jnTnkLeHSnHBe@server3456.wqjb0.mongodb.net/<dbname>?retryWrites=true&w=majority', {})
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.error('MongoDB connection error:', err));
 
@@ -66,7 +66,6 @@ mongoose.connect('mongodb://localhost:27017/billing', {})
 app.get('/login', (req, res) => {
     res.render('login', { error: null }); // Pass error as null initially
 });
-
 
 app.post('/login', (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
@@ -85,7 +84,6 @@ app.post('/login', (req, res, next) => {
     })(req, res, next);
 });
 
-
 app.get('/register', (req, res) => {
     res.render('register');
 });
@@ -101,7 +99,6 @@ app.post('/register', async (req, res) => {
     res.redirect('/login');
 });
 
-
 app.post('/logout', (req, res, next) => {
     req.logout(err => {
         if (err) {
@@ -110,7 +107,6 @@ app.post('/logout', (req, res, next) => {
         res.redirect('/login'); // Redirect to the login page after logout
     });
 });
-
 
 // Protect routes
 function ensureAuthenticated(req, res, next) {
@@ -128,8 +124,6 @@ app.get('/', ensureAuthenticated, async (req, res) => {
     res.render('index', { items, user: req.user }); // Pass items and user to the index view
 });
 
-
-
 // Route to display the item list
 app.get('/items', ensureAuthenticated, async (req, res) => {
     const items = await Item.find();
@@ -146,7 +140,6 @@ app.post('/api/items', async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 });
-
 
 // Edit and delete routes
 app.get('/api/items/:id/edit', async (req, res) => {
@@ -213,7 +206,6 @@ app.post('/api/invoices', async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 });
-
 
 // Route to display a specific invoice
 app.get('/invoices/:id', async (req, res) => {

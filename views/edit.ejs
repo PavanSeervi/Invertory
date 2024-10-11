@@ -9,19 +9,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
+            background: linear-gradient(to bottom right, #bfe0fd, #305f75);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
         }
 
         .container {
             margin-top: 50px;
             border-radius: 5px;
-            padding: 20px;
+            padding: 30px;
             background-color: #ffffff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             color: #007bff;
         }
 
@@ -29,6 +31,7 @@
             margin-top: 20px;
             background-color: #28a745;
             border: none;
+            transition: background-color 0.3s;
         }
 
         .btn-primary:hover {
@@ -47,6 +50,8 @@
 
         .form-label {
             font-weight: bold;
+            font-size: 0.75em;
+            /* Set label font size to 75% */
         }
 
         .icon {
@@ -65,6 +70,88 @@
         .back-button:hover {
             color: #0056b3;
         }
+
+        .form-control {
+            font-size: 0.75em;
+        }
+
+        .form-control:focus {
+            border-color: #45729f;
+            box-shadow: 0 0 5px rgba(69, 114, 159, 0.5);
+        }
+
+        .form-control::placeholder {
+            font-size: 15px;
+            color: #999;
+            /* Optional: change the color of the placeholder */
+        }
+
+        .btn-secondary {
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f8f9fa;
+            color: #007bff;
+        }
+
+        /* Media queries for mobile devices */
+        @media (max-width: 767px) {
+            .container {
+                margin: 20px;
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+                /* Adjust heading size for smaller screens */
+                margin-bottom: 20px;
+            }
+
+            .form-label {
+                font-size: 0.85em;
+                /* Slightly larger font size for better readability */
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                /* Full width buttons on mobile */
+                padding: 10px;
+                /* Increase padding for better touch targets */
+            }
+
+            .form-control {
+                font-size: 0.9em;
+                /* Slightly larger font size for inputs */
+                padding: 10px;
+                /* Increase padding for better touch targets */
+            }
+
+            .back-button {
+                font-size: 1.2rem;
+                /* Adjust back button size */
+            }
+        }
+
+        /* Adjustments for tablets (768px to 991px) */
+        @media (min-width: 768px) and (max-width: 991px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.75em;
+                /* Adjust heading size for tablets */
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                padding: 10px 20px;
+                /* More padding for larger screens */
+            }
+        }
     </style>
 </head>
 
@@ -73,31 +160,21 @@
         <a href="/" class="back-button" title="Back to Home"><i class="fas fa-arrow-left"></i></a>
         <h1><i class="fas fa-edit icon"></i>Edit Item</h1>
 
-        <form id="searchForm" action="/api/items/search" method="GET">
-            <div class="form-group">
-                <label for="sku" class="form-label"><i class="fas fa-barcode icon"></i>Search by Product Code</label>
-                <input type="text" id="sku" name="sku" class="form-control" placeholder="Enter Product Code">
-            </div>
-            <button type="submit" class="btn btn-primary"><i class="fas fa-search icon"></i>Search</button>
-        </form>
-
         <form id="editForm" action="/api/items/<%= item._id %>" method="POST" class="mt-4">
             <div class="form-group">
                 <label for="name" class="form-label"><i class="fas fa-tag icon"></i>Item Name</label>
-                <input type="text" id="name" name="name" class="form-control" value="<%= item.name %>" required>
+                <input type="text" id="name" name="name" class="form-control" value="<%= item.name %>" required
+                    placeholder="Enter item name">
             </div>
             <div class="form-group">
                 <label for="price" class="form-label"><i class="fas fa-rupee-sign icon"></i>Price (₹)</label>
-                <input type="number" id="price" name="price" class="form-control" value="<%= item.price %>" required>
-            </div>
-            <div class="form-group">
-                <label for="sku" class="form-label"><i class="fas fa-barcode icon"></i>Product Code</label>
-                <input type="text" id="sku" name="sku" class="form-control" value="<%= item.sku %>" required>
+                <input type="number" id="price" name="price" class="form-control" value="<%= item.price %>" required
+                    placeholder="Enter price">
             </div>
             <div class="form-group">
                 <label for="description" class="form-label"><i class="fas fa-info-circle icon"></i>Description</label>
-                <textarea id="description" name="description" class="form-control" rows="4"
-                    required><%= item.description %></textarea>
+                <textarea id="description" name="description" class="form-control" rows="4" required
+                    placeholder="Enter description"><%= item.description %></textarea>
             </div>
             <button type="submit" class="btn btn-primary"><i class="fas fa-save icon"></i>Update Item</button>
         </form>
