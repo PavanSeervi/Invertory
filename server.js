@@ -121,6 +121,7 @@ function ensureAuthenticated(req, res, next) {
 }
 
 // Routes
+
 // Route to render the home page
 app.get('/', ensureAuthenticated, async (req, res) => {
     const items = await Item.find(); // Fetch all items
@@ -128,21 +129,24 @@ app.get('/', ensureAuthenticated, async (req, res) => {
 });
 
 
+
 // Route to display the item list
 app.get('/items', ensureAuthenticated, async (req, res) => {
     const items = await Item.find();
-    res.render('itemList', { items }); // Render the itemList view
+    res.render('itemList', { items });
 });
 
+// Route to add a new item
 app.post('/api/items', async (req, res) => {
-    const newItem = new Item(req.body); // Create a new Item instance with the request body
+    const newItem = new Item(req.body);
     try {
-        await newItem.save(); // Save the item to the database
-        res.status(201).json({ message: 'Item added successfully!' }); // Send a success response
+        await newItem.save();
+        res.redirect('/');
     } catch (error) {
-        res.status(400).json({ error: error.message }); // Handle errors appropriately
+        res.status(400).json({ error: error.message });
     }
 });
+
 
 // Edit and delete routes
 app.get('/api/items/:id/edit', async (req, res) => {
@@ -171,35 +175,45 @@ app.post('/api/items/:id/delete', async (req, res) => {
     }
 });
 
-// Route to create an invoice
 app.post('/api/invoices', async (req, res) => {
-    const { customerName, items } = req.body; // Expecting items to be an array with { itemId, quantity }
+    const { customerName, items } = req.body;
+
+    // Check if items is defined and is an array
+    if (!items || !Array.isArray(items)) {
+        return res.status(400).json({ error: 'Items must be an array' });
+    }
+
     let totalAmount = 0;
 
-    // Process the items to calculate the total amount
-    const invoiceItems = await Promise.all(items.map(async (item) => {
-        const foundItem = await Item.findById(item.itemId);
-        const price = foundItem.price;
-        const quantity = item.quantity;
-        totalAmount += price * quantity;
-
-        return { item: foundItem._id, quantity, price }; // Prepare the item for the invoice
-    }));
-
-    // Create a new invoice
-    const invoice = new Invoice({
-        customerName,
-        items: invoiceItems,
-        totalAmount,
-    });
-
     try {
+        // Process the items to calculate the total amount
+        const invoiceItems = await Promise.all(items.map(async (item) => {
+            const foundItem = await Item.findById(item.itemId);
+            if (!foundItem) {
+                throw new Error(`Item with ID ${item.itemId} not found`);
+            }
+
+            const price = foundItem.price;
+            const quantity = item.quantity;
+            totalAmount += price * quantity;
+
+            return { item: foundItem._id, quantity, price }; // Prepare the item for the invoice
+        }));
+
+        // Create a new invoice
+        const invoice = new Invoice({
+            customerName,
+            items: invoiceItems,
+            totalAmount,
+        });
+
         await invoice.save(); // Save the invoice to the database
         res.redirect(`/invoices/${invoice._id}`); // Redirect to the newly created invoice
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 });
+
 
 // Route to display a specific invoice
 app.get('/invoices/:id', async (req, res) => {

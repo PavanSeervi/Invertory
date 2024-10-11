@@ -10,7 +10,6 @@
     <style>
         body {
             background-color: #f8f9fa;
-            /* Light background for better contrast */
         }
 
         .container {
@@ -18,50 +17,40 @@
             border-radius: 5px;
             padding: 20px;
             background-color: #ffffff;
-            /* White background for the form */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            /* Subtle shadow */
         }
 
         h1 {
             margin-bottom: 20px;
             color: #007bff;
-            /* Bootstrap primary color */
         }
 
         .btn-primary {
             margin-top: 20px;
-            /* Space above the button */
             background-color: #28a745;
-            /* Green color for update button */
             border: none;
         }
 
         .btn-primary:hover {
             background-color: #218838;
-            /* Darker green on hover */
         }
 
         .cancel-link {
             margin-top: 10px;
             display: inline-block;
             color: #dc3545;
-            /* Red color for cancel link */
         }
 
         .cancel-link:hover {
             color: #c82333;
-            /* Darker red on hover */
         }
 
         .form-label {
             font-weight: bold;
-            /* Bold labels for better readability */
         }
 
         .icon {
             margin-right: 5px;
-            /* Spacing for icons */
         }
 
         .back-button {
@@ -75,7 +64,6 @@
 
         .back-button:hover {
             color: #0056b3;
-            /* Darker blue on hover */
         }
     </style>
 </head>
@@ -85,7 +73,15 @@
         <a href="/" class="back-button" title="Back to Home"><i class="fas fa-arrow-left"></i></a>
         <h1><i class="fas fa-edit icon"></i>Edit Item</h1>
 
-        <form action="/api/items/<%= item._id %>" method="POST">
+        <form id="searchForm" action="/api/items/search" method="GET">
+            <div class="form-group">
+                <label for="sku" class="form-label"><i class="fas fa-barcode icon"></i>Search by Product Code</label>
+                <input type="text" id="sku" name="sku" class="form-control" placeholder="Enter Product Code">
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-search icon"></i>Search</button>
+        </form>
+
+        <form id="editForm" action="/api/items/<%= item._id %>" method="POST" class="mt-4">
             <div class="form-group">
                 <label for="name" class="form-label"><i class="fas fa-tag icon"></i>Item Name</label>
                 <input type="text" id="name" name="name" class="form-control" value="<%= item.name %>" required>
@@ -95,7 +91,7 @@
                 <input type="number" id="price" name="price" class="form-control" value="<%= item.price %>" required>
             </div>
             <div class="form-group">
-                <label for="sku" class="form-label"><i class="fas fa-barcode icon"></i>SKU</label>
+                <label for="sku" class="form-label"><i class="fas fa-barcode icon"></i>Product Code</label>
                 <input type="text" id="sku" name="sku" class="form-control" value="<%= item.sku %>" required>
             </div>
             <div class="form-group">
