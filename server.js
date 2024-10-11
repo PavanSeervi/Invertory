@@ -11,7 +11,7 @@ const session = require('express-session');
 const bcrypt = require('bcryptjs');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 
 // User Model
 const User = require('./models/User');
@@ -58,7 +58,7 @@ passport.deserializeUser(async (id, done) => {
 });
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://pavanseervi52:CQ6jnTnkLeHSnHBe@server3456.wqjb0.mongodb.net/<dbname>?retryWrites=true&w=majority', {})
+mongoose.connect('mongodb+srv://pavanseervi52:CQ6jnTnkLeHSnHBe@server3456.wqjb0.mongodb.net/<billing>?retryWrites=true&w=majority', {})
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.error('MongoDB connection error:', err));
 
